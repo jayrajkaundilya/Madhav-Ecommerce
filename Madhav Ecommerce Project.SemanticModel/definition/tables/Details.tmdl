@@ -1,0 +1,101 @@
+table Details
+	lineageTag: 45d82fe8-127d-4173-ab69-f5beb2f18e0e
+
+	column 'Order ID'
+		dataType: string
+		lineageTag: 072e07b4-c402-4b18-87cd-3542edb20260
+		summarizeBy: none
+		sourceColumn: Order ID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Amount
+		dataType: int64
+		formatString: 0
+		lineageTag: 16bfb2db-4d51-45f2-8d31-6c05039daeb4
+		summarizeBy: sum
+		sourceColumn: Amount
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Profit
+		dataType: int64
+		formatString: 0
+		lineageTag: 44a05336-adce-488c-97bf-33a068cac03e
+		summarizeBy: sum
+		sourceColumn: Profit
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 4baa8c6f-fa11-4246-98cd-c9053b9e24f1
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 23e5a9da-90e1-4a7d-956e-1f94fd784fed
+		summarizeBy: none
+		sourceColumn: Category
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sub-Category
+		dataType: string
+		lineageTag: 2a8206a0-3a4c-4fce-8cb2-575b217752af
+		summarizeBy: none
+		sourceColumn: Sub-Category
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PaymentMode
+		dataType: string
+		lineageTag: 413c1f55-fe9d-4380-8052-c4e62ca3bf2f
+		summarizeBy: none
+		sourceColumn: PaymentMode
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Average Order Value' = [Amount] / [Quantity]
+		dataType: int64
+		lineageTag: 7101bbd9-a358-42f2-a74a-b6749ce15e8d
+		summarizeBy: sum
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Details = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\KIIT\OneDrive\Desktop\powerbi\Details.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Order ID", type text}, {"Amount", Int64.Type}, {"Profit", Int64.Type}, {"Quantity", Int64.Type}, {"Category", type text}, {"Sub-Category", type text}, {"PaymentMode", type text}})
+				in
+				    #"Changed Type"
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+
